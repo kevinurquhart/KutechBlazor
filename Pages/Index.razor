@@ -1,0 +1,396 @@
+﻿@page "/"
+@inject IProductService ProductService
+@inject ITrainingService TrainingService
+@inject NavigationManager Navigation
+
+<PageTitle>SQL Server Training, Consulting, and Support Services - Kutech</PageTitle>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="hero-title animate-fade-in">Expert SQL Server Training & Consultancy</h1>
+        <p class="hero-subtitle animate-slide-up">Text goes here</p>
+        <div class="hero-buttons animate-slide-up-delay">
+            <button class="btn btn-primary" @onclick='() => Navigation.NavigateTo("/training/courses")'>
+                View Courses
+            </button>
+            <button class="btn btn-secondary" @onclick='() => Navigation.NavigateTo("/contact")'>
+                Get In Touch
+            </button>
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="/images/hero-bg.jpg" alt="SQL Server Training" />
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Kutech?</h2>
+        <div class="features-grid">
+            <FeatureCard 
+                Icon="fas fa-graduation-cap"
+                Title="Expert Training"
+                Description="Text goes here" />
+            <FeatureCard 
+                Icon="fas fa-laptop-code"
+                Title="Flexible Learning"
+                Description="Text goes here" />
+            <FeatureCard 
+                Icon="fas fa-users"
+                Title="Professional Support"
+                Description="Text goes here" />
+            <FeatureCard 
+                Icon="fas fa-certificate"
+                Title="Certified Excellence"
+                Description="Text goes here" />
+        </div>
+    </div>
+</section>
+
+<!-- Training Options -->
+<section class="training-section">
+    <div class="container">
+        <h2 class="section-title">Training Options</h2>
+        <div class="training-grid">
+            <TrainingCard 
+                Title="On Demand Training"
+                Description="Text goes here"
+                Price="From £395"
+                Link="/training/on-demand"
+                Icon="fas fa-play-circle" />
+            <TrainingCard 
+                Title="Remote Training"
+                Description="Text goes here"
+                Price="From £500"
+                Link="/training/remote"
+                Icon="fas fa-video" />
+            <TrainingCard 
+                Title="In-Person Training"
+                Description="Text goes here"
+                Price="Contact Us"
+                Link="/training/in-person"
+                Icon="fas fa-chalkboard-teacher" />
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+@if (featuredProducts != null && featuredProducts.Any())
+{
+    <section class="products-section">
+        <div class="container">
+            <h2 class="section-title">Featured Courses & Services</h2>
+            <div class="products-grid">
+                @foreach (var product in featuredProducts)
+                {
+                    <ProductCard Product="product" />
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Services Section -->
+<section class="services-section">
+    <div class="container">
+        <h2 class="section-title">Professional Services</h2>
+        <div class="services-grid">
+            <ServiceCard 
+                Title="SQL Health Check"
+                Description="Text goes here"
+                Price="£195"
+                Icon="fas fa-heartbeat"
+                Link="/services/health-check" />
+            <ServiceCard 
+                Title="Consultancy"
+                Description="Text goes here"
+                Price="From £500"
+                Icon="fas fa-briefcase"
+                Link="/services/consultancy" />
+            <ServiceCard 
+                Title="Support Contracts"
+                Description="Text goes here"
+                Price="Custom"
+                Icon="fas fa-handshake"
+                Link="/services/support" />
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials-section">
+    <div class="container">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <TestimonialsCarousel />
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Enhance Your SQL Server Skills?</h2>
+            <p>Text goes here</p>
+            <button class="btn btn-large btn-white" @onclick='() => Navigation.NavigateTo("/contact")'>
+                Start Your Journey
+            </button>
+        </div>
+    </div>
+</section>
+
+@code {
+    private List<Product>? featuredProducts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load featured products from service
+        featuredProducts = await ProductService.GetFeaturedProductsAsync();
+    }
+}
+
+<style>
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        height: 600px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        z-index: 1;
+    }
+
+    .hero-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: white;
+        max-width: 800px;
+        padding: 0 2rem;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    /* Sections */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    section {
+        padding: 4rem 0;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 3rem;
+        color: #2d3748;
+    }
+
+    /* Features */
+    .features-section {
+        background: white;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    /* Training */
+    .training-section {
+        background: #f7fafc;
+    }
+
+    .training-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    /* Products */
+    .products-section {
+        background: white;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    /* Services */
+    .services-section {
+        background: #f7fafc;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    /* Testimonials */
+    .testimonials-section {
+        background: white;
+    }
+
+    /* CTA */
+    .cta-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .cta-content {
+        text-align: center;
+    }
+
+    .cta-content h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: white;
+        color: #667eea;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+        background: white;
+        color: #667eea;
+    }
+
+    .btn-white {
+        background: white;
+        color: #667eea;
+    }
+
+    .btn-large {
+        padding: 1rem 3rem;
+        font-size: 1.125rem;
+    }
+
+    /* Animations */
+    .animate-fade-in {
+        animation: fadeIn 1s ease-out;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 1s ease-out;
+    }
+
+    .animate-slide-up-delay {
+        animation: slideUp 1s ease-out 0.5s both;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>

@@ -1,0 +1,219 @@
+﻿@implements IDisposable
+@inject IJSRuntime JS
+
+<div class="testimonials-carousel">
+    <div class="testimonial-container">
+        @if (testimonials != null && testimonials.Any())
+        {
+            <div class="testimonial-slide @(currentIndex == 0 ? "active" : "")">
+                <div class="testimonial-content">
+                    <p class="testimonial-text">"@testimonials[currentIndex].Text"</p>
+                    <div class="testimonial-author">
+                        <strong>@testimonials[currentIndex].Author</strong>
+                        <span>@testimonials[currentIndex].Role</span>
+                    </div>
+                    <div class="testimonial-rating">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="carousel-controls">
+        <button class="carousel-btn prev" @onclick="PrevSlide">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="carousel-dots">
+            @if (testimonials != null)
+            {
+                @for (int i = 0; i < testimonials.Count; i++)
+                {
+                    var index = i;
+                    <span class="dot @(currentIndex == index ? "active" : "")"
+                          @onclick="() => GoToSlide(index)"></span>
+                }
+            }
+        </div>
+        <button class="carousel-btn next" @onclick="NextSlide">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+@code {
+    private List<Testimonial> testimonials = new();
+    private int currentIndex = 0;
+    private System.Threading.Timer? autoPlayTimer;
+
+    public class Testimonial
+    {
+        public string Text { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string Role { get; set; } = "";
+        public int Rating { get; set; } = 5;
+    }
+
+    protected override void OnInitialized()
+    {
+        // Load testimonials - in real app, this would come from a service
+        testimonials = new List<Testimonial>
+        {
+            new Testimonial
+            {
+                Text = "Text goes here",
+                Author = "John Smith",
+                Role = "Database Administrator"
+            },
+            new Testimonial
+            {
+                Text = "Text goes here",
+                Author = "Sarah Johnson",
+                Role = "IT Manager"
+            },
+            new Testimonial
+            {
+                Text = "Text goes here",
+                Author = "Michael Brown",
+                Role = "Senior Developer"
+            }
+        };
+
+        // Start auto-play
+        autoPlayTimer = new System.Threading.Timer(_ =>
+        {
+            InvokeAsync(() =>
+            {
+                NextSlide();
+                StateHasChanged();
+            });
+        }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+    }
+
+    private void NextSlide()
+    {
+        currentIndex = (currentIndex + 1) % testimonials.Count;
+    }
+
+    private void PrevSlide()
+    {
+        currentIndex = currentIndex == 0 ? testimonials.Count - 1 : currentIndex - 1;
+    }
+
+    private void GoToSlide(int index)
+    {
+        currentIndex = index;
+    }
+
+    public void Dispose()
+    {
+        autoPlayTimer?.Dispose();
+    }
+}
+
+<style>
+    .testimonials-carousel {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .testimonial-container {
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .testimonial-slide {
+        opacity: 0;
+        transition: opacity 0.5s;
+        text-align: center;
+    }
+
+        .testimonial-slide.active {
+            opacity: 1;
+        }
+
+    .testimonial-text {
+        font-size: 1.25rem;
+        font-style: italic;
+        line-height: 1.8;
+        color: #4a5568;
+        margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 1rem;
+    }
+
+        .testimonial-author strong {
+            font-size: 1.125rem;
+            color: #2d3748;
+        }
+
+        .testimonial-author span {
+            color: #718096;
+        }
+
+    .testimonial-rating {
+        color: #f6ad55;
+    }
+
+    .carousel-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .carousel-btn {
+        background: transparent;
+        border: 2px solid #e2e8f0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #718096;
+    }
+
+        .carousel-btn:hover {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+    .carousel-dots {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .dot.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        .dot:hover {
+            background: #764ba2;
+        }
+</style>
