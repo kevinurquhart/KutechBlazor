@@ -1,12 +1,15 @@
 ﻿// Services/ITrainingService.cs
 using Microsoft.Data.SqlClient;
 using System.Data;
+using KutechBlazor.Models;
 
-public interface ITrainingService
+namespace KutechBlazor.Services.Interfaces
 {
-    Task<List<Course>> GetOnDemandCoursesAsync();
-    Task<List<Course>> GetRemoteCoursesAsync();
-    Task<List<Course>> GetInPersonCoursesAsync();
-    Task<Course?> GetCourseByIdAsync(int id);
+    public interface ITrainingService
+    {
+        Task<List<Course>> GetOnDemandCoursesAsync();
+        Task<List<Course>> GetRemoteCoursesAsync();
+        Task<List<Course>> GetInPersonCoursesAsync();
+        Task<Course?> GetCourseByIdAsync(int id);
+    }
 }
-

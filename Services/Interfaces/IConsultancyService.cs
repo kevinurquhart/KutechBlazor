@@ -1,10 +1,13 @@
 ﻿// Services/IConsultancyService.cs
 using Microsoft.Data.SqlClient;
 using System.Data;
+using KutechBlazor.Models;
 
-public interface IConsultancyService
+namespace KutechBlazor.Services.Interfaces
 {
-    Task<List<ConsultancyPackage>> GetPackagesAsync();
-    Task<ConsultancyPackage?> GetPackageByIdAsync(int id);
+    public interface IConsultancyService
+    {
+        Task<List<ConsultancyPackage>> GetPackagesAsync();
+        Task<ConsultancyPackage?> GetPackageByIdAsync(int id);
+    }
 }
-

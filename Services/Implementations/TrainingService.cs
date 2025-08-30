@@ -1,63 +1,67 @@
 ﻿// Services/TrainingService.cs
 using Microsoft.Data.SqlClient;
 using System.Data;
+using KutechBlazor.Services.Interfaces;
+using KutechBlazor.Models;
 
-public class TrainingService : ITrainingService
+namespace KutechBlazor.Services.Implementations
 {
-    private readonly IConfiguration _configuration;
-
-    public TrainingService(IConfiguration configuration)
+    public class TrainingService : ITrainingService
     {
-        _configuration = configuration;
-    }
+        private readonly IConfiguration _configuration;
 
-    public async Task<List<Course>> GetOnDemandCoursesAsync()
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        public TrainingService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
-        var courses = await connection.QueryAsync<Course>(
-            "sp_GetOnDemandCourses",
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<Course>> GetOnDemandCoursesAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return courses.ToList();
-    }
+            var courses = await connection.QueryAsync<Course>(
+                "GetOnDemandCourses",
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<List<Course>> GetRemoteCoursesAsync()
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return courses.ToList();
+        }
 
-        var courses = await connection.QueryAsync<Course>(
-            "sp_GetRemoteCourses",
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<Course>> GetRemoteCoursesAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return courses.ToList();
-    }
+            var courses = await connection.QueryAsync<Course>(
+                "GetRemoteCourses",
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<List<Course>> GetInPersonCoursesAsync()
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return courses.ToList();
+        }
 
-        var courses = await connection.QueryAsync<Course>(
-            "sp_GetInPersonCourses",
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<Course>> GetInPersonCoursesAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return courses.ToList();
-    }
+            var courses = await connection.QueryAsync<Course>(
+                "GetInPersonCourses",
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<Course?> GetCourseByIdAsync(int id)
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return courses.ToList();
+        }
 
-        var course = await connection.QueryFirstOrDefaultAsync<Course>(
-            "sp_GetCourseById",
-            new { CourseId = id },
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<Course?> GetCourseByIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return course;
+            var course = await connection.QueryFirstOrDefaultAsync<Course>(
+                "GetCourseById",
+                new { CourseId = id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            return course;
+        }
     }
 }
-

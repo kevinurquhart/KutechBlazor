@@ -1,12 +1,15 @@
 ﻿// Services/IProductService.cs
 using Microsoft.Data.SqlClient;
 using System.Data;
+using KutechBlazor.Models;
 
-public interface IProductService
+namespace KutechBlazor.Services.Interfaces
 {
-    Task<List<Product>> GetFeaturedProductsAsync();
-    Task<List<Product>> GetAllProductsAsync();
-    Task<Product?> GetProductByIdAsync(int id);
-    Task<List<Product>> GetProductsByCategoryAsync(string category);
+    public interface IProductService
+    {
+        Task<List<Product>> GetFeaturedProductsAsync();
+        Task<List<Product>> GetAllProductsAsync();
+        Task<Product?> GetProductByIdAsync(int id);
+        Task<List<Product>> GetProductsByCategoryAsync(string category);
+    }
 }
-

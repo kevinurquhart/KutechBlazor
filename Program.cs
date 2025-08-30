@@ -1,7 +1,11 @@
+global using Dapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using KutechBlazor.Services.Interfaces;
+using KutechBlazor.Services.Implementations;
+using KutechBlazor.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

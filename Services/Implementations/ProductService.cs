@@ -1,68 +1,72 @@
 ﻿// Services/ProductService.cs
-using System.Data;
-using Microsoft.Data.SqlClient;
 using Dapper;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using KutechBlazor.Services.Interfaces;
+using KutechBlazor.Models;
 
-public class ProductService : IProductService
+namespace KutechBlazor.Services.Implementations
 {
-    private readonly IDbConnection _dbConnection;
-    private readonly IConfiguration _configuration;
-
-    public ProductService(IDbConnection dbConnection, IConfiguration configuration)
+    public class ProductService : IProductService
     {
-        _dbConnection = dbConnection;
-        _configuration = configuration;
-    }
+        private readonly IDbConnection _dbConnection;
+        private readonly IConfiguration _configuration;
 
-    public async Task<List<Product>> GetFeaturedProductsAsync()
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        public ProductService(IDbConnection dbConnection, IConfiguration configuration)
+        {
+            _dbConnection = dbConnection;
+            _configuration = configuration;
+        }
 
-        // Using stored procedure as per your preference
-        var products = await connection.QueryAsync<Product>(
-            "sp_GetFeaturedProducts",
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<Product>> GetFeaturedProductsAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return products.ToList();
-    }
+            // Using stored procedure as per your preference
+            var products = await connection.QueryAsync<Product>(
+                "GetFeaturedProducts",
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<List<Product>> GetAllProductsAsync()
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return products.ToList();
+        }
 
-        var products = await connection.QueryAsync<Product>(
-            "sp_GetAllProducts",
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return products.ToList();
-    }
+            var products = await connection.QueryAsync<Product>(
+                "GetAllProducts",
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<Product?> GetProductByIdAsync(int id)
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return products.ToList();
+        }
 
-        var product = await connection.QueryFirstOrDefaultAsync<Product>(
-            "sp_GetProductById",
-            new { ProductId = id },
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<Product?> GetProductByIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return product;
-    }
+            var product = await connection.QueryFirstOrDefaultAsync<Product>(
+                "GetProductById",
+                new { ProductId = id },
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<List<Product>> GetProductsByCategoryAsync(string category)
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return product;
+        }
 
-        var products = await connection.QueryAsync<Product>(
-            "sp_GetProductsByCategory",
-            new { Category = category },
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<Product>> GetProductsByCategoryAsync(string category)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return products.ToList();
+            var products = await connection.QueryAsync<Product>(
+                "GetProductsByCategory",
+                new { Category = category },
+                commandType: CommandType.StoredProcedure
+            );
+
+            return products.ToList();
+        }
     }
 }
-

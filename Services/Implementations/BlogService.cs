@@ -1,53 +1,57 @@
 ﻿// Services/BlogService.cs
 using Microsoft.Data.SqlClient;
 using System.Data;
+using KutechBlazor.Services.Interfaces;
+using KutechBlazor.Models;
 
-public class BlogService : IBlogService
+namespace KutechBlazor.Services.Implementations
 {
-    private readonly IConfiguration _configuration;
-
-    public BlogService(IConfiguration configuration)
+    public class BlogService : IBlogService
     {
-        _configuration = configuration;
-    }
+        private readonly IConfiguration _configuration;
 
-    public async Task<List<BlogPost>> GetRecentPostsAsync(int count)
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        public BlogService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
-        var posts = await connection.QueryAsync<BlogPost>(
-            "sp_GetRecentBlogPosts",
-            new { Count = count },
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<BlogPost>> GetRecentPostsAsync(int count)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return posts.ToList();
-    }
+            var posts = await connection.QueryAsync<BlogPost>(
+                "GetRecentBlogPosts",
+                new { Count = count },
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<BlogPost?> GetPostByIdAsync(int id)
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return posts.ToList();
+        }
 
-        var post = await connection.QueryFirstOrDefaultAsync<BlogPost>(
-            "sp_GetBlogPostById",
-            new { PostId = id },
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<BlogPost?> GetPostByIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return post;
-    }
+            var post = await connection.QueryFirstOrDefaultAsync<BlogPost>(
+                "GetBlogPostById",
+                new { PostId = id },
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<List<BlogPost>> GetPostsByCategoryAsync(string category)
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return post;
+        }
 
-        var posts = await connection.QueryAsync<BlogPost>(
-            "sp_GetBlogPostsByCategory",
-            new { Category = category },
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<BlogPost>> GetPostsByCategoryAsync(string category)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return posts.ToList();
+            var posts = await connection.QueryAsync<BlogPost>(
+                "GetBlogPostsByCategory",
+                new { Category = category },
+                commandType: CommandType.StoredProcedure
+            );
+
+            return posts.ToList();
+        }
     }
 }
-

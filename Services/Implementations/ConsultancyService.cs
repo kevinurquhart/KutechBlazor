@@ -1,38 +1,43 @@
 ﻿// Services/ConsultancyService.cs
 using Microsoft.Data.SqlClient;
 using System.Data;
+using KutechBlazor.Services.Interfaces;
+using KutechBlazor.Models;
 
-public class ConsultancyService : IConsultancyService
+namespace KutechBlazor.Services.Implementations
 {
-    private readonly IConfiguration _configuration;
-
-    public ConsultancyService(IConfiguration configuration)
+    public class ConsultancyService : IConsultancyService
     {
-        _configuration = configuration;
-    }
+        private readonly IConfiguration _configuration;
 
-    public async Task<List<ConsultancyPackage>> GetPackagesAsync()
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        public ConsultancyService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
-        var packages = await connection.QueryAsync<ConsultancyPackage>(
-            "sp_GetConsultancyPackages",
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<List<ConsultancyPackage>> GetPackagesAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return packages.ToList();
-    }
+            var packages = await connection.QueryAsync<ConsultancyPackage>(
+                "GetConsultancyPackages",
+                commandType: CommandType.StoredProcedure
+            );
 
-    public async Task<ConsultancyPackage?> GetPackageByIdAsync(int id)
-    {
-        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            return packages.ToList();
+        }
 
-        var package = await connection.QueryFirstOrDefaultAsync<ConsultancyPackage>(
-            "sp_GetConsultancyPackageById",
-            new { PackageId = id },
-            commandType: CommandType.StoredProcedure
-        );
+        public async Task<ConsultancyPackage?> GetPackageByIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        return package;
+            var package = await connection.QueryFirstOrDefaultAsync<ConsultancyPackage>(
+                "GetConsultancyPackageById",
+                new { PackageId = id },
+                commandType: CommandType.StoredProcedure
+            );
+
+            return package;
+        }
     }
 }
