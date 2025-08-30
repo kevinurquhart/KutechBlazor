@@ -27,7 +27,6 @@
 		<Folder Include="Models\" />
 		<Folder Include="Services\Interfaces\" />
 		<Folder Include="Services\Implementations\" />
-		<Folder Include="Shared\Components\Cards\" />
 	</ItemGroup>
 
 </Project>
